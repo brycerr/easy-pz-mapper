@@ -5,13 +5,15 @@ import os
 from PIL import Image
 
 from enums import *
+from overpass import *
 from utils import *
 
 # TODO
-#   [ ] Basic map generation functionality
+#   [x] Basic map generation functionality
+#   [ ] Refactor this into a map object
 #   [ ] ...
-#   [ ] Upload real location using map
-#   [ ] Convert map data to roads
+#   [ ] Upload arbitrary real location using map
+#   [ ] Convert map data to good roads
 #   [ ] Fill in houses
 #   [ ] ...
 
@@ -23,11 +25,11 @@ def main():
     map_name = sanitize_input(input_map_name)
 
     # dimensions of map in cells (cell is 300x300 tiles)
-    #   the origin (0, 0) is based on the northwest (top left) most cell
+    #   the origin (0, 0) is based on the northwest most cell (top left)
     #   for reference, the B41 map is 65x52 cells
     # TODO: don't hardcode this here
-    map_width_cells = 1  # west/east
-    map_height_cells = 1  # north/south
+    map_width_cells = 4  # west/east
+    map_height_cells = 4  # north/south
 
     # generate the map
     init_file_structure(map_name)
@@ -54,15 +56,17 @@ def init_map(map_name, map_width_cells, map_height_cells):
     # TODO: base map noise, roads, vegetation
     # create_veg_map(map_name, width, height)
 
+    generate_crappy_roads(base_path)
+
 
 def init_base_map(map_name, width, height):
     bmp_dir = "maps/" + map_name + "/bmps/"
-    base_path = map_name + "_base.bmp"
+    base_path = bmp_dir + map_name + "_base.bmp"
 
     # generate plain grass map
     tile_type = BMColor.DarkGrass.value
     img = Image.new("RGB", (width, height), tile_type)
-    img.save(bmp_dir + base_path)
+    img.save(base_path)
 
     return base_path
 
