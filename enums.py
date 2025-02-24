@@ -8,7 +8,7 @@ class BMColor(Enum):
     LightGrass = (145, 135, 60)
     Sand = (210, 200, 160)
     LightAsphalt = (165, 160, 140)
-    DarkAsphalt = (100, 100, 100)   # main roads
+    DarkAsphalt = (100, 100, 100)       # main roads
     MediumAsphalt = (120, 120, 120)
     GravelDirt = (140, 70, 15)
     Dirt = (120, 70, 20)
@@ -29,4 +29,4 @@ class VMColor(Enum):
     BushesGrassFewTrees = (255, 0, 255)
     DeadCorn1 = (255, 128, 0)
     DeadCorn2 = (220, 100, 0)
-    Nothing = (0, 0, 0)     # completely black tiles
+    Nothing = (0, 0, 0)                 # completely black tiles

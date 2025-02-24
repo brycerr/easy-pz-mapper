@@ -1,9 +1,12 @@
 
 import io
 import os
-import re
 
-from enums import BMColor, VMColor
+from PIL import Image
+from PIL.ImageQt import rgb
+
+from enums import *
+from utils import *
 
 # TODO
 #   [ ] Basic map generation functionality
@@ -18,8 +21,7 @@ def main():
     # name of the generated map
     # TODO: don't hardcode this here
     input_map_name = "test"
-    # TODO: proper input validation
-    map_name = re.sub(r"[^A-Za-z0-9]", "", input_map_name)   # removes non-alphanumeric characters from the string
+    map_name = sanitize_input(input_map_name)
 
     # dimensions of map in cells (cell is 300x300 tiles)
     #   the origin (0, 0) is based on the northwest (top left) most cell
@@ -36,27 +38,36 @@ def main():
 def init_file_structure(map_name):
     """Sets up the proper file structure for the map."""
     # root map directory
-    map_dir = "maps/" + map_name
-    os.mkdir(map_dir)
+    maps_dir = "maps/" + map_name
+    os.makedirs(maps_dir, exist_ok=True)
 
     # base bmp images
-    bmp_dir = map_dir + "/bmps"
-    os.mkdir(bmp_dir)
+    bmp_dir = maps_dir + "/bmps"
+    os.makedirs(bmp_dir, exist_ok=True)
 
 
-def init_map(map_name, width, height):
-    """Creates the base """
-    create_base_map(map_name, width, height)
-    create_veg_map(map_name, width, height)
+def init_map(map_name, map_width_cells, map_height_cells):
+    """Creates the base bitmap images"""
+    width = map_width_cells * 300
+    height = map_height_cells * 300
+
+    init_base_map(map_name, width, height)
+    # create_veg_map(map_name, width, height)
 
 
-def create_base_map(map_name, width, height):
-    bmp_dir = "maps/" + map_name + "/bmps"
+def init_base_map(map_name, width, height):
+    bmp_dir = "maps/" + map_name + "/bmps/"
     base_path = map_name + "_base.bmp"
+
+    # generate plain grass map
+    tile_type = BMColor.DarkGrass.value
+    img = Image.new("RGB", (width, height), tile_type)
+    img.save(bmp_dir + base_path)
 
 
 def create_veg_map(map_name, width, height):
-    bmp_dir = "maps/" + map_name + "/bmps"
+    bmp_dir = "maps/" + map_name + "/bmps/"
+    veg_path = map_name + "_veg.bmp"
 
 
 def generate_roads(map_name):
