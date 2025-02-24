@@ -3,7 +3,6 @@ import io
 import os
 
 from PIL import Image
-from PIL.ImageQt import rgb
 
 from enums import *
 from utils import *
@@ -51,7 +50,8 @@ def init_map(map_name, map_width_cells, map_height_cells):
     width = map_width_cells * 300
     height = map_height_cells * 300
 
-    init_base_map(map_name, width, height)
+    base_path = init_base_map(map_name, width, height)
+    # TODO: base map noise, roads, vegetation
     # create_veg_map(map_name, width, height)
 
 
@@ -64,14 +64,17 @@ def init_base_map(map_name, width, height):
     img = Image.new("RGB", (width, height), tile_type)
     img.save(bmp_dir + base_path)
 
+    return base_path
+
 
 def create_veg_map(map_name, width, height):
+    # TODO: generation of the vegetation bmp image depends on a finalized base bmp image
     bmp_dir = "maps/" + map_name + "/bmps/"
     veg_path = map_name + "_veg.bmp"
 
 
 def generate_roads(map_name):
-    # TODO
+    # TODO: road generation depends on either the google maps or openstreetmap api
     pass
 
 
