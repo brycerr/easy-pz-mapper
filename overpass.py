@@ -6,14 +6,25 @@ from utils import *
 
 
 def generate_crappy_roads(base_path):
-    # TODO: proof of concept, very messy code here
+    # TODO: proof of concept, very messy code here. Location is currently hardcoded.
+    #   This will need to be turned into functions eventually
 
     api = overpy.Overpass()
 
+    # # UWW
+    # hard_coded_distance = 600
+    # hard_coded_location_coords = "42.839786, -88.743771"
+
+    # Watertown
+    hard_coded_distance = 12000
+    hard_coded_location_coords = "43.2, -88.716667"
+
     # fetch all ways near Whitewater, WI
-    result = api.query("""
+    result = api.query(f"""
         [out:json];
-        way(around:600,42.839786, -88.743771)["highway"];
+        (
+            way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"];
+        );
         out body;
         >;
         out skel qt;
@@ -28,9 +39,75 @@ def generate_crappy_roads(base_path):
 
     ways.sort()
 
-    result = api.query("""
+    # water
+    result = api.query(f"""
         [out:json];
-        way(around:600,42.839786, -88.743771)["highway"="footway"];
+        (
+            way(around:{hard_coded_distance},{hard_coded_location_coords})["natural"="water"];
+            relation(around:{hard_coded_distance},{hard_coded_location_coords})["natural"="water"];
+            way(around:{hard_coded_distance},{hard_coded_location_coords})["waterway"="riverbank"];
+            relation(around:{hard_coded_distance},{hard_coded_location_coords})["waterway"="riverbank"];
+        );
+        out body;
+        >;
+        out skel qt;
+    """)
+
+    water = []
+    for way in result.ways:
+        water_coords = [(float(node.lat), float(node.lon)) for node in way.nodes]
+        distance = min(haversine_distance(location, coord) for coord in water_coords)
+        water.append((distance, water_coords))
+
+    water.sort()
+
+    # service
+    result = api.query(f"""
+        [out:json];
+        (
+            way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="service"];
+        );
+        out body;
+        >;
+        out skel qt;
+    """)
+
+    services = []
+    for way in result.ways:
+        service_coords = [(float(node.lat), float(node.lon)) for node in way.nodes]
+        distance = min(haversine_distance(location, coord) for coord in service_coords)
+        services.append((distance, service_coords))
+
+    services.sort()
+
+    # parking lots
+    result = api.query(f"""
+    [out:json];
+    (
+        way(around:{hard_coded_distance},{hard_coded_location_coords})["amenity"="parking"];
+        relation(around:{hard_coded_distance},{hard_coded_location_coords})["amenity"="parking"];
+        way(around:{hard_coded_distance},{hard_coded_location_coords})["parking"="surface"];
+    );
+    out body;
+    >;
+    out skel qt;
+    """)
+
+    parking_lots = []
+    for way in result.ways:
+        parking_lot_coords = [(float(node.lat), float(node.lon)) for node in way.nodes]
+        distance = min(haversine_distance(location, coord) for coord in parking_lot_coords)
+        parking_lots.append((distance, parking_lot_coords))
+
+    parking_lots.sort()
+
+    # footways
+    result = api.query(f"""
+        [out:json];
+        (
+            way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="footway"];
+            way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="pedestrian"];
+        );
         out body;
         >;
         out skel qt;
@@ -44,23 +121,23 @@ def generate_crappy_roads(base_path):
 
     footways.sort()
 
-    result = api.query("""
+    # roads
+    result = api.query(f"""
     [out:json];
     (
-      way(around:600,42.839786,-88.743771)["highway"="motorway"];
-      way(around:600,42.839786,-88.743771)["highway"="trunk"];
-      way(around:600,42.839786,-88.743771)["highway"="primary"];
-      way(around:600,42.839786,-88.743771)["highway"="secondary"];
-      way(around:600,42.839786,-88.743771)["highway"="tertiary"];
-      way(around:600,42.839786,-88.743771)["highway"="unclassified"];
-      way(around:600,42.839786,-88.743771)["highway"="residential"];
-      way(around:600,42.839786,-88.743771)["highway"="motorway_link"];
-      way(around:600,42.839786,-88.743771)["highway"="trunk_link"];
-      way(around:600,42.839786,-88.743771)["highway"="primary_link"];
-      way(around:600,42.839786,-88.743771)["highway"="secondary_link"];
-      way(around:600,42.839786,-88.743771)["highway"="tertiary_link"];
-      way(around:600,42.839786,-88.743771)["highway"="living_street"];
-      way(around:600,42.839786,-88.743771)["highway"="service"];
+      way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="motorway"];
+      way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="trunk"];
+      way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="primary"];
+      way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="secondary"];
+      way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="tertiary"];
+      way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="unclassified"];
+      way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="residential"];
+      way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="motorway_link"];
+      way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="trunk_link"];
+      way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="primary_link"];
+      way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="secondary_link"];
+      way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="tertiary_link"];
+      way(around:{hard_coded_distance},{hard_coded_location_coords})["highway"="living_street"];
     );
     out body;
     >;
@@ -75,6 +152,7 @@ def generate_crappy_roads(base_path):
 
     roads.sort()
 
+    Image.MAX_IMAGE_PIXELS = 144000000
     bitmap = Image.open(base_path)
     draw = ImageDraw.Draw(bitmap)
 
@@ -93,6 +171,7 @@ def generate_crappy_roads(base_path):
     #         x, y = map_to_bitmap(coord[0], coord[1], bitmap.width, bitmap.height, bounds)
     #         draw.point((x, y), fill=road_tile)
 
+    print("Plotting medium grass")
     med_grass = BMColor.MediumGrass.value
     for _, (way_coords) in ways:
         for i in range(len(way_coords) - 1):
@@ -102,6 +181,7 @@ def generate_crappy_roads(base_path):
             x2, y2 = map_to_bitmap(coord2[0], coord2[1], bitmap.width, bitmap.height, bounds)
             draw.line((x1, y1, x2, y2), fill=med_grass, width=40, joint="curve")
 
+    print("Plotting light grass")
     light_grass = BMColor.LightGrass.value
     for _, (way_coords) in ways:
         for i in range(len(way_coords) - 1):
@@ -111,7 +191,35 @@ def generate_crappy_roads(base_path):
             x2, y2 = map_to_bitmap(coord2[0], coord2[1], bitmap.width, bitmap.height, bounds)
             draw.line((x1, y1, x2, y2), fill=light_grass, width=25, joint="curve")
 
+    # service
+    print("Plotting medium asphalt")
+    med_asphalt = BMColor.MediumAsphalt.value
+    for _, service_coords in services:
+        for i in range(len(service_coords) - 1):
+            coord1 = service_coords[i]
+            coord2 = service_coords[i + 1]
+            x1, y1 = map_to_bitmap(coord1[0], coord1[1], bitmap.width, bitmap.height, bounds)
+            x2, y2 = map_to_bitmap(coord2[0], coord2[1], bitmap.width, bitmap.height, bounds)
+            draw.line((x1, y1, x2, y2), fill=med_asphalt, width=6, joint="curve")
+
+    # parking lots
+    print("Plotting parking lots")
+    for _, parking_lot_coords in parking_lots:
+        points = []
+        for i in range(len(parking_lot_coords) - 1):
+            coord1 = parking_lot_coords[i]
+            coord2 = parking_lot_coords[i + 1]
+            x1, y1 = map_to_bitmap(coord1[0], coord1[1], bitmap.width, bitmap.height, bounds)
+            x2, y2 = map_to_bitmap(coord2[0], coord2[1], bitmap.width, bitmap.height, bounds)
+            points.append(x1)
+            points.append(y1)
+            points.append(x2)
+            points.append(y2)
+
+        draw.polygon(points, fill=med_asphalt)
+
     # footways
+    print("Plotting footways")
     light_asphalt = BMColor.LightAsphalt.value
     for _, footway_coords in footways:
         for i in range(len(footway_coords) - 1):
@@ -119,9 +227,10 @@ def generate_crappy_roads(base_path):
             coord2 = footway_coords[i + 1]
             x1, y1 = map_to_bitmap(coord1[0], coord1[1], bitmap.width, bitmap.height, bounds)
             x2, y2 = map_to_bitmap(coord2[0], coord2[1], bitmap.width, bitmap.height, bounds)
-            draw.line((x1, y1, x2, y2), fill=light_asphalt, width=2, joint="curve")
+            draw.line((x1, y1, x2, y2), fill=light_asphalt, width=1, joint="curve")
 
     # Plot the roads on the bitmap
+    print("Plotting roads")
     road_tile = BMColor.DarkAsphalt.value
     for _, road_coords in roads:
         for i in range(len(road_coords) - 1):
@@ -129,9 +238,26 @@ def generate_crappy_roads(base_path):
             coord2 = road_coords[i + 1]
             x1, y1 = map_to_bitmap(coord1[0], coord1[1], bitmap.width, bitmap.height, bounds)
             x2, y2 = map_to_bitmap(coord2[0], coord2[1], bitmap.width, bitmap.height, bounds)
-            draw.line((x1, y1, x2, y2), fill=road_tile, width=10, joint="curve")
+            draw.line((x1, y1, x2, y2), fill=road_tile, width=8, joint="curve")
 
-    bitmap.save('less_crappy_map.png')
+    # water
+    print("Plotting water")
+    water_tile = BMColor.Water.value
+    for _, water_coords in water:
+        points = []
+        for i in range(len(water_coords) - 1):
+            coord1 = water_coords[i]
+            coord2 = water_coords[i + 1]
+            x1, y1 = map_to_bitmap(coord1[0], coord1[1], bitmap.width, bitmap.height, bounds)
+            x2, y2 = map_to_bitmap(coord2[0], coord2[1], bitmap.width, bitmap.height, bounds)
+            points.append(x1)
+            points.append(y1)
+            points.append(x2)
+            points.append(y2)
+
+        draw.polygon(points, fill=water_tile)
+
+    bitmap.save('watertown.bmp')
 
 
 # Function to map coordinates to bitmap pixels

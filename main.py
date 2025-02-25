@@ -28,8 +28,8 @@ def main():
     #   the origin (0, 0) is based on the northwest most cell (top left)
     #   for reference, the B41 map is 65x52 cells
     # TODO: don't hardcode this here
-    map_width_cells = 4  # west/east
-    map_height_cells = 4  # north/south
+    map_width_cells = 40  # west/east
+    map_height_cells = 40  # north/south
 
     # generate the map
     init_file_structure(map_name)
@@ -65,6 +65,7 @@ def init_base_map(map_name, width, height):
 
     # generate plain grass map
     tile_type = BMColor.DarkGrass.value
+    Image.MAX_IMAGE_PIXELS = 144000000
     img = Image.new("RGB", (width, height), tile_type)
     img.save(base_path)
 
