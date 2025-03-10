@@ -28,11 +28,13 @@ def init_map():
 
     # real location info
     # TODO: don't hardcode this
-    # real_lat = 43.2
-    # real_lon = -88.716667
 
-    real_lat = 42.835
-    real_lon = -88.736111
+    # real_lat = 42.835
+    # real_lon = -88.736111
+
+    real_lat = 43.2
+    real_lon = -88.716667
+
     real_radius = 12000
 
     # initialize the map
