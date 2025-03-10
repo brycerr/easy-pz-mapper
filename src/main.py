@@ -1,11 +1,9 @@
-
-import io
 import os
 
-from PIL import Image
-
-from enums import *
 from overpass import *
+import overpass_api_query
+
+from src.classes.Map import *
 from utils import *
 
 # TODO
@@ -21,7 +19,7 @@ from utils import *
 def main():
     # name of the generated map
     # TODO: don't hardcode this here
-    input_map_name = "test"
+    input_map_name = "test_oop"
     map_name = sanitize_input(input_map_name)
 
     # dimensions of map in cells (cell is 300x300 tiles)
@@ -31,45 +29,38 @@ def main():
     map_width_cells = 40  # west/east
     map_height_cells = 40  # north/south
 
-    # generate the map
+    # real location info
+    # TODO: don't hardcode this
+    real_lat = 43.2
+    real_lon = -88.716667
+    real_radius = 12000
+
+    # initialize map object
+    pz_map = Map(map_name, map_width_cells, map_height_cells, real_lat, real_lon, real_radius)
+
+    # initialize the map
     init_file_structure(map_name)
-    init_map(map_name, map_width_cells, map_height_cells)
+
+    pz_map.init_base_bmp()
+    # TODO: base map grass noise, vegetation map
+    # create_veg_map(map_name, width, height)
+
+    # get data from the overpass api
+    pz_map.set_ways(overpass_api_query.get_ways_from_point(real_lat, real_lon, real_radius))
+
+    # draw ways
+    pz_map.draw_ways()
 
 
 def init_file_structure(map_name):
     """Sets up the proper file structure for the map."""
     # root map directory
-    maps_dir = "maps/" + map_name
+    maps_dir = "../maps/" + map_name
     os.makedirs(maps_dir, exist_ok=True)
 
     # base bmp images
     bmp_dir = maps_dir + "/bmps"
     os.makedirs(bmp_dir, exist_ok=True)
-
-
-def init_map(map_name, map_width_cells, map_height_cells):
-    """Creates the base bitmap images"""
-    width = map_width_cells * 300
-    height = map_height_cells * 300
-
-    base_path = init_base_map(map_name, width, height)
-    # TODO: base map noise, roads, vegetation
-    # create_veg_map(map_name, width, height)
-
-    generate_crappy_roads(base_path)
-
-
-def init_base_map(map_name, width, height):
-    bmp_dir = "maps/" + map_name + "/bmps/"
-    base_path = bmp_dir + map_name + "_base.bmp"
-
-    # generate plain grass map
-    tile_type = BMColor.DarkGrass.value
-    Image.MAX_IMAGE_PIXELS = 144000000
-    img = Image.new("RGB", (width, height), tile_type)
-    img.save(base_path)
-
-    return base_path
 
 
 def create_veg_map(map_name, width, height):
