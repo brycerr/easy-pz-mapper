@@ -9,7 +9,7 @@ References:
     https://github.com/jtkirkpatrick/bitmap
 """
 
-from utils import sanitize_input
+from src.utils import sanitize_input
 
 
 class Bitmap(object):

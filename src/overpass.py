@@ -1,7 +1,7 @@
 import overpy
 from PIL import Image, ImageDraw
 
-from enums import *
+from src.classes.enums import *
 from utils import *
 
 
@@ -218,6 +218,23 @@ def generate_crappy_roads(base_path):
 
         draw.polygon(points, fill=med_asphalt)
 
+    # water
+    print("Plotting water")
+    water_tile = BMColor.Water.value
+    for _, water_coords in water:
+        points = []
+        for i in range(len(water_coords) - 1):
+            coord1 = water_coords[i]
+            coord2 = water_coords[i + 1]
+            x1, y1 = map_to_bitmap(coord1[0], coord1[1], bitmap.width, bitmap.height, bounds)
+            x2, y2 = map_to_bitmap(coord2[0], coord2[1], bitmap.width, bitmap.height, bounds)
+            points.append(x1)
+            points.append(y1)
+            points.append(x2)
+            points.append(y2)
+
+        draw.polygon(points, fill=water_tile)
+
     # footways
     print("Plotting footways")
     light_asphalt = BMColor.LightAsphalt.value
@@ -239,23 +256,6 @@ def generate_crappy_roads(base_path):
             x1, y1 = map_to_bitmap(coord1[0], coord1[1], bitmap.width, bitmap.height, bounds)
             x2, y2 = map_to_bitmap(coord2[0], coord2[1], bitmap.width, bitmap.height, bounds)
             draw.line((x1, y1, x2, y2), fill=road_tile, width=8, joint="curve")
-
-    # water
-    print("Plotting water")
-    water_tile = BMColor.Water.value
-    for _, water_coords in water:
-        points = []
-        for i in range(len(water_coords) - 1):
-            coord1 = water_coords[i]
-            coord2 = water_coords[i + 1]
-            x1, y1 = map_to_bitmap(coord1[0], coord1[1], bitmap.width, bitmap.height, bounds)
-            x2, y2 = map_to_bitmap(coord2[0], coord2[1], bitmap.width, bitmap.height, bounds)
-            points.append(x1)
-            points.append(y1)
-            points.append(x2)
-            points.append(y2)
-
-        draw.polygon(points, fill=water_tile)
 
     bitmap.save('watertown.bmp')
 
