@@ -1,3 +1,4 @@
+import datetime
 import decimal
 import math
 
@@ -41,24 +42,57 @@ class Map:
         min_lon = find_point_from_distance_to_point(self.lat, self.lon, self.radius, 270)[1]
         max_lon = find_point_from_distance_to_point(self.lat, self.lon, self.radius, 90)[1]
         bounds = min_lat, min_lon, max_lat, max_lon
-        print("Types:")
-        for x in bounds:
-            print(type(x))
 
         # TODO: finish this properly based on way type
         #   idea -> different function that sorts & loops through ways, calling this one with the correct width & color
         # ====
-        print("Plotting roads")
-        dark_asphalt = BMColor.DarkAsphalt.value
+
+        layers = {}     # dictionary to store drawing layers based on color
+        unknowns = set()   # for reporting unknown way types
+
+        print("Drawing ways")
         for way in self.ways:
-            print(way)
+            # print(way)
+
+            way_style = way.get_way_style()
+            if way_style is None:   # skip this way
+                # report it to unknown.txt file for debug purposes
+                unknowns.add(way.tags.get("highway"))
+                continue
+
+            way_color = way_style[0].value
+            way_width = way_style[1]
+
+            # create a new layer for the way color if it doesn't exist
+            if way_color not in layers:
+                layer_image = Image.new("RGBA", (bitmap.width, bitmap.height), (0, 0, 0, 0))
+                layer_draw = ImageDraw.Draw(layer_image)
+                layers[way_color] = (layer_image, layer_draw)
+
+            # draw on the corresponding layer
+            layer_draw = layers[way_color][1]
             for i in range(len(way.nodes) - 1):
                 node_1 = way.nodes[i]
                 node_2 = way.nodes[i + 1]
 
                 x1, y1 = map_to_bitmap(node_1.lat, node_1.lon, bitmap.width, bitmap.height, bounds)
                 x2, y2 = map_to_bitmap(node_2.lat, node_2.lon, bitmap.width, bitmap.height, bounds)
-                draw.line((x1, y1, x2, y2), fill=dark_asphalt, width=8, joint="curve")
+                layer_draw.line((x1, y1, x2, y2), fill=way_color, width=way_width, joint="curve")
+
+        # merge all layers onto the base bitmap
+        sorted_layers = sorted(layers.keys(), key=get_color_layer_sort_order)
+
+        for color in sorted_layers:
+            layer_image = layers[color][0]
+            bitmap = Image.alpha_composite(bitmap.convert("RGBA"), layer_image)
+
+        # report unknown way types
+        if len(unknowns) != 0:
+            file = open("../testing/unknown.txt", "a")
+            file.write(f"\n[{datetime.datetime.utcnow()}] UNKNOWN WAY TYPES")
+            for way_type in unknowns:
+                if way_type is not None:
+                    file.write(f"\n> {way_type}")
         # ====
 
         bitmap.save(self.base_path)
@@ -81,6 +115,14 @@ class Map:
 
     def set_veg_path(self, filepath):
         self.veg_path = filepath
+
+
+def get_color_layer_sort_order(color):
+    """Returns the sort order of a given color based on the BMColor enum."""
+    try:
+        return list(BMColor).index(BMColor(color))
+    except ValueError:
+        return len(BMColor)     # return a high value for unknown colors
 
 
 def find_point_from_distance_to_point(start_lat, start_lon, distance, angle):
@@ -106,14 +148,13 @@ def find_point_from_distance_to_point(start_lat, start_lon, distance, angle):
     end_lat = decimal.Decimal(math.degrees(lat_2))
     end_lon = decimal.Decimal(math.degrees(lon_2))
 
-    print(f"End: [{end_lat}, {end_lon}]")
+    # print(f"End: [{end_lat}, {end_lon}]")
 
     return [end_lat, end_lon]
 
 
 def map_to_bitmap(lat, lon, width, height, bounds):
     min_lat, min_lon, max_lat, max_lon = bounds
-    print(type(min_lon))
     x = int((lon - min_lon) / (max_lon - min_lon) * width)
     y = height - int((lat - min_lat) / (max_lat - min_lat) * height)
     return x, y

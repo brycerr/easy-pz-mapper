@@ -8,16 +8,16 @@ class BMColor(Enum):
     DarkGrass = (90, 100, 35)
     MediumGrass = (117, 117, 47)
     LightGrass = (145, 135, 60)
-    Sand = (210, 200, 160)
-    LightAsphalt = (165, 160, 140)      # sidewalk/cement pavement
-    DarkAsphalt = (100, 100, 100)       # main roads
-    MediumAsphalt = (120, 120, 120)
-    GravelDirt = (140, 70, 15)
     Dirt = (120, 70, 20)
     DirtGrass = (80, 55, 20)
+    GravelDirt = (140, 70, 15)
+    Sand = (210, 200, 160)
+    Water = (0, 138, 255)
+    LightAsphalt = (165, 160, 140)      # sidewalk/cement pavement
+    MediumAsphalt = (120, 120, 120)
+    DarkAsphalt = (100, 100, 100)       # main roads
     DarkPothole = (110, 100, 100)
     LightPothole = (130, 120, 120)
-    Water = (0, 138, 255)
 
 
 class VMColor(Enum):
@@ -40,11 +40,11 @@ class VMColor(Enum):
 #   I believe greyscale colors must have the exact same values for (r,g,b).
 
 
-# OPENSTREETMAP
+# OPENSTREETMAP RELATED
 
 class HighwayType(Enum):
     """
-    OpenStreetMap highway types.
+    All OpenStreetMap highway types.
 
     Reference: https://wiki.openstreetmap.org/wiki/Key:highway
     """
