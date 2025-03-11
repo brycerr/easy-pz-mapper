@@ -6,49 +6,29 @@ import utils
 from classes.enums import *
 
 
-def generate():
-    pz_map = init_map()
+def generate(map_data):
+    pz_map = init_map(map_data)     # TODO: user input
     draw_ways(pz_map)
 
     return pz_map
 
 
-def init_map():
-    # name of the generated map
-    # TODO: don't hardcode this here
-    input_map_name = "test_oop"
-    map_name = utils.sanitize_input(input_map_name)
-
-    # dimensions of map in cells (cell is 300x300 tiles)
-    #   the origin (0, 0) is based on the northwest most cell (top left)
-    #   for reference, the B41 map is 65x52 cells
-    # TODO: don't hardcode this here
-    map_width_cells = 40  # west/east
-    map_height_cells = 40  # north/south
-
-    # real location info
-    # TODO: don't hardcode this
-
-    # real_lat = 42.835
-    # real_lon = -88.736111
-
-    real_lat = 43.2
-    real_lon = -88.716667
-
-    real_radius = 12000
+def init_map(map_data):
+    # process user input
+    map_name, map_width_cells, map_height_cells, lat, lon, radius = map_data
 
     # initialize the map
     init_file_structure(map_name)
 
     # initialize map object
-    pz_map = Map(map_name, map_width_cells, map_height_cells, real_lat, real_lon, real_radius)
+    pz_map = Map(map_name, map_width_cells, map_height_cells, lat, lon, radius)
 
     pz_map.init_base_bmp()
     # TODO: base map grass noise, vegetation map
     # create_veg_map(map_name, width, height)
 
     # get data from the overpass api
-    pz_map.set_ways(overpass_api_query.get_ways_from_point(real_lat, real_lon, real_radius))
+    pz_map.set_ways(overpass_api_query.get_ways_from_point(lat, lon, radius))
 
     return pz_map
 
