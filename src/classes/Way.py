@@ -16,11 +16,11 @@ class Way:
 
 
 highway_styles = {
-    # dictionary mapping highway types to colors.
+    # dictionary mapping highway types to a corresponding style.
     # format: (color, width)
     
     # Roads (main tags for the road network)
-    "motorway":         (BMColor.DarkAsphalt, 8),
+    "motorway":         (BMColor.DarkAsphalt, 10),
     "trunk":            (BMColor.DarkAsphalt, 8),
     "primary":          (BMColor.DarkAsphalt, 8),
     "secondary":        (BMColor.DarkAsphalt, 8),

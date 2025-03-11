@@ -4,7 +4,13 @@ from enum import Enum
 # BITMAP COLORS
 
 class BMColor(Enum):
-    """Base bitmap RGB values."""
+    """
+    Base bitmap RGB values.
+
+    Colors are drawn on the bitmap in the order they appear here.
+    Meaning the first enum is drawn on the bottom-most layer and the last is drawn on the top-most layer.
+    """
+    Water = (0, 138, 255)
     DarkGrass = (90, 100, 35)
     MediumGrass = (117, 117, 47)
     LightGrass = (145, 135, 60)
@@ -12,16 +18,21 @@ class BMColor(Enum):
     DirtGrass = (80, 55, 20)
     GravelDirt = (140, 70, 15)
     Sand = (210, 200, 160)
-    Water = (0, 138, 255)
     LightAsphalt = (165, 160, 140)      # sidewalk/cement pavement
     MediumAsphalt = (120, 120, 120)
     DarkAsphalt = (100, 100, 100)       # main roads
-    DarkPothole = (110, 100, 100)
     LightPothole = (130, 120, 120)
+    DarkPothole = (110, 100, 100)
 
 
 class VMColor(Enum):
-    """Vegetation bitmap RGB values."""
+    """
+    Vegetation bitmap RGB values.
+
+    Colors are drawn on the bitmap in the order they appear here.
+    Meaning the first enum is drawn on the bottom-most layer and the last is drawn on the top-most layer.
+    """
+    Nothing = (0, 0, 0)
     DenseForest = (255, 0, 0)
     DenseTreesAndGrass = (200, 0, 0)
     TreesAndGrass = (127, 0, 0)
@@ -31,13 +42,13 @@ class VMColor(Enum):
     BushesGrassFewTrees = (255, 0, 255)
     DeadCorn1 = (255, 128, 0)
     DeadCorn2 = (220, 100, 0)
-    Nothing = (0, 0, 0)
 
 
 # TODO: Zombie Spawn Map
 #   The zombie spawn map is in greyscale, where black (0,0,0) represents no zombies
 #   and white (255,255,255) represents the max amount of zombies.
-#   I believe greyscale colors must have the exact same values for (r,g,b).
+#   I believe greyscale colors must have the exact same values for all (r,g,b).
+#   I imagine an enum for these colors is unnecessary
 
 
 # OPENSTREETMAP RELATED

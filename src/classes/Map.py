@@ -19,12 +19,16 @@ class Map:
         self.base_path = ""     # base bitmap filepath
         self.veg_path = ""      # veg bitmap filepath
 
+        # technical constants (potentially move this elsewhere to make it more accessible?)
+        self.CELL_SIZE = 300    # changed to 256 in B42 (supposedly doesn't affect map making?)
+        self.CHUNK_SIZE = 10    # changed to 8 in B42 (supposedly doesn't affect map making?)
+
     def init_base_bmp(self):
         """Creates the base bitmap image."""
         self.base_path = f"../maps/{self.name}/bmps/{self.name}_base.bmp"
 
-        bmp_width = self.width_cells * 300
-        bmp_height = self.height_cells * 300
+        bmp_width = self.width_cells * self.CELL_SIZE
+        bmp_height = self.height_cells * self.CELL_SIZE
 
         # generate plain grass map
         tile_type = BMColor.DarkGrass.value
@@ -34,7 +38,7 @@ class Map:
 
     def draw_ways(self):
         bitmap = Image.open(self.base_path)
-        draw = ImageDraw.Draw(bitmap)
+        # draw = ImageDraw.Draw(bitmap)
 
         # calculate the bounds of the bitmap
         max_lat = find_point_from_distance_to_point(self.lat, self.lon, self.radius, 0)[0]
@@ -43,12 +47,8 @@ class Map:
         max_lon = find_point_from_distance_to_point(self.lat, self.lon, self.radius, 90)[1]
         bounds = min_lat, min_lon, max_lat, max_lon
 
-        # TODO: finish this properly based on way type
-        #   idea -> different function that sorts & loops through ways, calling this one with the correct width & color
-        # ====
-
         layers = {}     # dictionary to store drawing layers based on color
-        unknowns = set()   # for reporting unknown way types
+        unknowns = set()   # for reporting unknown way types to unknown.txt
 
         print("Drawing ways")
         for way in self.ways:
@@ -69,7 +69,7 @@ class Map:
                 layer_draw = ImageDraw.Draw(layer_image)
                 layers[way_color] = (layer_image, layer_draw)
 
-            # draw on the corresponding layer
+            # draw line on the corresponding layer
             layer_draw = layers[way_color][1]
             for i in range(len(way.nodes) - 1):
                 node_1 = way.nodes[i]
@@ -93,10 +93,10 @@ class Map:
             for way_type in unknowns:
                 if way_type is not None:
                     file.write(f"\n> {way_type}")
-        # ====
 
+        # save the bitmap
         bitmap.save(self.base_path)
-        bitmap.show()
+        bitmap.show(title=f"{self.name} Base Bitmap")
 
     # getters & setters
 
@@ -126,7 +126,11 @@ def get_color_layer_sort_order(color):
 
 
 def find_point_from_distance_to_point(start_lat, start_lon, distance, angle):
-    """Calculates a point based on distance from a starting point."""
+    """
+    Calculates a point based on distance from a starting point.
+
+    Reference: https://www.movable-type.co.uk/scripts/latlong.html
+    """
 
     # print(f"Start: [{start_lat}, {start_lon}], Distance: {distance}, Angle: {angle}")
 
