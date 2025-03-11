@@ -87,7 +87,7 @@ class Map:
             bitmap = Image.alpha_composite(bitmap.convert("RGBA"), layer_image)
 
         # report unknown way types
-        if len(unknowns) != 0:
+        if len(unknowns) > 0:
             file = open("../testing/unknown.txt", "a")
             file.write(f"\n[{datetime.datetime.utcnow()}] UNKNOWN WAY TYPES")
             for way_type in unknowns:

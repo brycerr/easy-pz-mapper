@@ -28,7 +28,11 @@ def init_map(map_data):
     # create_veg_map(map_name, width, height)
 
     # get data from the overpass api
-    ways = overpass_api_query.get_ways_from_point(lat, lon, radius)     # TODO: edit this during store/load data update
+    adjusted_radius = math.sqrt(2 * (radius ** 2))  # assuming square map, ensures all appropriate ways are fetched
+    # print(f"Adjusted Radius: {adjusted_radius}")
+
+    # TODO: edit this during store/load data update
+    ways = overpass_api_query.get_ways_from_point(lat, lon, adjusted_radius)
     pz_map.set_ways(ways)
 
     return pz_map
