@@ -7,7 +7,7 @@ from classes.enums import *
 
 
 def generate(map_data):
-    pz_map = init_map(map_data)     # TODO: user input
+    pz_map = init_map(map_data)
     draw_ways(pz_map)
 
     return pz_map
@@ -28,7 +28,8 @@ def init_map(map_data):
     # create_veg_map(map_name, width, height)
 
     # get data from the overpass api
-    pz_map.set_ways(overpass_api_query.get_ways_from_point(lat, lon, radius))
+    ways = overpass_api_query.get_ways_from_point(lat, lon, radius)     # TODO: edit this during store/load data update
+    pz_map.set_ways(ways)
 
     return pz_map
 
