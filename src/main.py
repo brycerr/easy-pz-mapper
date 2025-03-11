@@ -7,17 +7,18 @@ import input
 #   [x] Basic map generation functionality
 #   [x] Refactor this into a map object
 #   [x] Upload arbitrary real location using map
-#   [ ] Separate Overpass query from rest of map generation
-#   [ ] Get user input for map name, coordinates, etc
+#   [x] Separate Overpass query from rest of map generation
+#   [ ] Store/load Overpass query data
+#   [x] Get user input for map name, coordinates, etc
 #   [x] Convert map data to ways
 #   [ ] Convert ways into a network of vertices
 #   [ ] Draw polygons
 #   [ ] Water
 #   [ ] Straighten ways
 #   [ ] Veg map
-#   [ ] Zombie spawn map
-#   [ ] Foraging zones
-#   [ ] Fill in houses
+#   [ ] Zombie spawn map (stretch goal)
+#   [ ] Foraging zones (stretch goal)
+#   [ ] Fill in houses (stretch goal)
 
 
 def main():
