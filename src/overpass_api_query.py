@@ -7,6 +7,8 @@ from src.classes.Way import *
 def get_ways_from_point(lat, lon, radius):
     """Query the overpass API for all ways around a given point (lat, lon) and radius (meters)."""
 
+    print("Querying the Overpass API...")
+
     api = overpy.Overpass()
 
     query = f"""
@@ -22,6 +24,7 @@ def get_ways_from_point(lat, lon, radius):
     result = api.query(query)
 
     # process the ways
+    print("Processing the ways...")
     ways = []
     for way in result.ways:
         # current way's nodes

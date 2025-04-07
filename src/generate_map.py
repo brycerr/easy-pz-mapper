@@ -2,8 +2,6 @@ import os
 
 from classes.Map import *
 import overpass_api_query
-import utils
-from classes.enums import *
 
 
 def generate(map_data):
@@ -28,7 +26,8 @@ def init_map(map_data):
     # create_veg_map(map_name, width, height)
 
     # get data from the overpass api
-    adjusted_radius = math.sqrt(2 * (radius ** 2))  # assuming square map, ensures all appropriate ways are fetched
+    # TODO: this assumes the map is square, fix this for non-square maps
+    adjusted_radius = math.sqrt(2 * (radius ** 2))  # ensures all appropriate ways are fetched
     # print(f"Adjusted Radius: {adjusted_radius}")
 
     # TODO: edit this during store/load data update

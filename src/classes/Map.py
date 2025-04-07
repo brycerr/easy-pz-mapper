@@ -50,7 +50,7 @@ class Map:
         layers = {}     # dictionary to store drawing layers based on color
         unknowns = set()   # for reporting unknown way types to unknown.txt
 
-        print("Drawing ways")
+        print("Drawing ways...")
         for way in self.ways:
             # print(way)
 
