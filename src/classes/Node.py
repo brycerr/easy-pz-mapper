@@ -12,7 +12,10 @@ class Node:
         self.y = -1
 
     def __str__(self):
-        return f"Node: {self.id} [{self.lat}, {self.lon}] Tags: {self.tags} | x,y: ({self.x}, {self.y}"
+        return f"Node: {self.id} [{self.lat}, {self.lon}] Tags: {self.tags} | x,y: ({self.x}, {self.y})"
+
+    def get_point(self):
+        return self.x, self.y
 
     def get_lat(self):
         return self.lat

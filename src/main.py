@@ -1,6 +1,7 @@
 
 import generate_map
 import input
+from classes.Optimizer import Optimizer
 
 # TODO
 #   [x] Basic map generation functionality
@@ -10,7 +11,7 @@ import input
 #   [ ] Store/load Overpass query data
 #   [x] Get user input for map name, coordinates, etc
 #   [x] Convert map data to ways
-#   [ ] Convert ways into a network of vertices (is this even necessary?)
+#   [x] Convert ways into a network of vertices (is this even necessary?)
 #   [ ] Draw polygons
 #   [ ] Water
 #   [ ] Straighten ways
@@ -22,8 +23,27 @@ import input
 
 
 def main():
+    # get data for map
     map_data = input.select_mode()
+
+    # generate initial map from data
     pz_map = generate_map.generate(map_data)
+
+    node_count = 0
+    for way in pz_map.ways:
+        node_count += len(way.nodes)
+    print(f"Node count before: {node_count}")
+
+    # optimize map
+    optimizer = Optimizer(pz_map)
+    optimizer.preprocess()
+
+    node_count = 0
+    for way in pz_map.ways:
+        node_count += len(way.nodes)
+    print(f"Node count after: {node_count}")
+
+    pz_map.draw_ways()
 
 
 if __name__ == '__main__':
