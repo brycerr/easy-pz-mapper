@@ -14,7 +14,7 @@ from classes.Optimizer import Optimizer
 #   [x] Convert ways into a network of vertices (is this even necessary?)
 #   [ ] Draw polygons
 #   [ ] Water
-#   [ ] Straighten ways
+#   [ ] *** Straighten ways
 #   [ ] Veg map (directly depends on a completed base map)
 #   [ ] Zombie spawn map (stretch goal)
 #   [ ] Foraging zones (stretch goal)
@@ -29,19 +29,13 @@ def main():
     # generate initial map from data
     pz_map = generate_map.generate(map_data)
 
-    node_count = 0
-    for way in pz_map.ways:
-        node_count += len(way.nodes)
-    print(f"Node count before: {node_count}")
+    print(f"Before: {pz_map.get_node_count()} nodes.")
 
     # optimize map
     optimizer = Optimizer(pz_map)
     optimizer.preprocess()
 
-    node_count = 0
-    for way in pz_map.ways:
-        node_count += len(way.nodes)
-    print(f"Node count after: {node_count}")
+    print(f"After:  {pz_map.get_node_count()} nodes.")
 
     pz_map.draw_ways()
 

@@ -37,6 +37,8 @@ def get_map_data_input():
         input_map_height_cells = round(radius / cell_size)
     map_height_cells = int(input_map_height_cells)
 
+    print()
+
     map_data = [map_name, map_width_cells, map_height_cells, lat, lon, radius]
 
     return map_data

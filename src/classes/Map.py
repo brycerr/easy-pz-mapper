@@ -112,6 +112,18 @@ class Map:
 
     # getters & setters
 
+    def get_node_count(self):
+        node_count = 0
+        for way in self.ways:
+            is_relevant = False
+            for tag in way.tags:
+                if tag == "highway":
+                    is_relevant = True
+            if not is_relevant:
+                break
+            node_count += len(way.nodes)
+        return node_count
+
     def get_ways(self):
         return self.ways
 
