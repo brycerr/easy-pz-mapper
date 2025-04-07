@@ -79,6 +79,10 @@ class Map:
                 x2, y2 = map_to_bitmap(node_2.lat, node_2.lon, bitmap.width, bitmap.height, bounds)
                 layer_draw.line((x1, y1, x2, y2), fill=way_color, width=way_width, joint="curve")
 
+                # record bitmap coordinates (easier for hill climbing optimizer to work with)
+                node_1.set_bitmap_coords(x1, y1)
+                node_2.set_bitmap_coords(x2, y2)
+
         # merge all layers onto the base bitmap
         sorted_layers = sorted(layers.keys(), key=get_color_layer_sort_order)
 
@@ -97,6 +101,14 @@ class Map:
         # save the bitmap
         bitmap.save(self.base_path)
         bitmap.show(title=f"{self.name} Base Bitmap")
+
+    def save_map(self):
+        # TODO: save map data (including ways & nodes) to a file
+        return
+
+    def load_map(self):
+        # TODO: load map data from file
+        return
 
     # getters & setters
 
