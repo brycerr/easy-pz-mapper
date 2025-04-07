@@ -1,4 +1,3 @@
-import os
 
 import generate_map
 import input
@@ -11,18 +10,19 @@ import input
 #   [ ] Store/load Overpass query data
 #   [x] Get user input for map name, coordinates, etc
 #   [x] Convert map data to ways
-#   [ ] Convert ways into a network of vertices
+#   [ ] Convert ways into a network of vertices (is this even necessary?)
 #   [ ] Draw polygons
 #   [ ] Water
 #   [ ] Straighten ways
-#   [ ] Veg map
+#   [ ] Veg map (directly depends on a completed base map)
 #   [ ] Zombie spawn map (stretch goal)
 #   [ ] Foraging zones (stretch goal)
-#   [ ] Fill in houses (stretch goal)
+#   [ ] Fill in houses (super stretch goal)
+#   [ ] Implement GUI (super duper stretch goal)
 
 
 def main():
-    map_data = input.get_map_data_input()
+    map_data = input.select_mode()
     pz_map = generate_map.generate(map_data)
 
 
