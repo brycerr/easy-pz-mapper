@@ -29,13 +29,13 @@ def main():
     # generate initial map from data
     pz_map = generate_map.generate(map_data)
 
-    print(f"Before: {pz_map.get_node_count()} nodes.")
+    print(f"Before: {pz_map.get_node_count()} ways.")
 
     # optimize map
     optimizer = Optimizer(pz_map)
     optimizer.preprocess()
 
-    print(f"After:  {pz_map.get_node_count()} nodes.")
+    print(f"After:  {pz_map.get_node_count()} ways.")
 
     pz_map.draw_ways()
 

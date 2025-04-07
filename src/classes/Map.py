@@ -112,8 +112,8 @@ class Map:
 
     # getters & setters
 
-    def get_node_count(self):
-        node_count = 0
+    def get_way_count(self):
+        way_count = 0
         for way in self.ways:
             is_relevant = False
             for tag in way.tags:
@@ -121,8 +121,8 @@ class Map:
                     is_relevant = True
             if not is_relevant:
                 break
-            node_count += len(way.nodes)
-        return node_count
+            way_count += len(way.nodes)
+        return way_count
 
     def get_ways(self):
         return self.ways
