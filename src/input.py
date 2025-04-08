@@ -29,12 +29,12 @@ def get_map_data_input():
 
     input_map_width_cells = input("Input map width (west/east) in cells: ")
     if not input_map_width_cells:   # default test value
-        input_map_width_cells = round(radius / cell_size)
+        input_map_width_cells = 2 * round(radius / cell_size)
     map_width_cells = int(input_map_width_cells)
 
     input_map_height_cells = input("Input map height (north/south) in cells: ")
     if not input_map_height_cells:  # default test value
-        input_map_height_cells = round(radius / cell_size)
+        input_map_height_cells = 2 * round(radius / cell_size)
     map_height_cells = int(input_map_height_cells)
 
     print()
