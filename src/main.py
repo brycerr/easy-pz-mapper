@@ -2,6 +2,7 @@
 import generate_map
 import input
 from classes.Optimizer import Optimizer
+import test_optimizer
 
 # TODO
 #   [x] Basic map generation functionality
@@ -29,15 +30,17 @@ def main():
     # generate initial map from data
     pz_map = generate_map.generate(map_data)
 
-    print(f"Before: {pz_map.get_node_count()} ways.")
+    print(f"Before: {pz_map.get_way_count()} ways.")
 
     # optimize map
-    optimizer = Optimizer(pz_map)
-    optimizer.preprocess()
+    # optimizer = Optimizer(pz_map)
+    # optimizer.preprocess()
 
-    print(f"After:  {pz_map.get_node_count()} ways.")
+    test_optimizer.optimize_map_octilinear(pz_map)
 
-    pz_map.draw_ways()
+    print(f"After:  {pz_map.get_way_count()} ways.")
+
+    pz_map.draw_using_xy()
 
 
 if __name__ == '__main__':

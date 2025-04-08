@@ -102,6 +102,30 @@ class Map:
         bitmap.save(self.base_path)
         bitmap.show(title=f"{self.name} Base Bitmap")
 
+    def draw_using_xy(self, padding=20, way_color=(0, 0, 0)):
+        # TODO: CLEAN THIS UP
+        # Gather all unique nodes from ways
+        unique_nodes = set()
+        for way in self.ways:
+            unique_nodes.update(way.nodes)
+
+        # Create image
+        bmp_width = self.width_cells * self.CELL_SIZE
+        bmp_height = self.height_cells * self.CELL_SIZE
+        img = Image.new("RGB", (bmp_width, bmp_height), color="white")
+        draw = ImageDraw.Draw(img)
+
+        # Draw ways
+        for way in self.ways:
+            if len(way.nodes) < 2:
+                continue
+            points = [(node.x, node.y) for node in way.nodes]
+            draw.line(points, fill=way_color, width=2)
+
+        # save the bitmap
+        img.save(f"../maps/{self.name}/bmps/{self.name}_base_opt.bmp")
+        img.show(title=f"{self.name} Base Bitmap")
+
     def save_map(self):
         # TODO: save map data (including ways & nodes) to a file
         return

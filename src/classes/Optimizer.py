@@ -1,5 +1,6 @@
 
 import math
+import random
 
 
 class Optimizer:
@@ -7,12 +8,40 @@ class Optimizer:
         self.pz_map = pz_map
 
     def preprocess(self):
+        """Simplifies the map to reduce the workload of the optimizer."""
         print("Preprocessing...")
         # use the Ramer-Douglas-Peucker algorithm to decimate each way into a similar way using less nodes (if possible)
-        epsilon = 1.0
+        epsilon = 1.0   # TODO: consider making epsilon value data driven by way type
         for way in self.pz_map.ways:
             way.nodes = rdp(way.nodes, epsilon)
         print("Preprocessing complete.")
+
+    def hill_climb(self, state):
+        # arbitrarily select starting way TODO: change start selection process?
+        for way in self.pz_map:
+            # TODO
+            pass
+
+
+def octi_criterion(pz_map):
+    """
+    Encourages way angles to be a multiple of 45 degrees.
+
+    Reference: Automatic Metro Map Layout Using Multicriteria Optimization
+    by J. Stott, P. Rodgers, J. C. Martínez-Ovando and S. G. Walker
+    """
+    penalty = 0
+    for way in pz_map.ways:     # neighbor nodes are all nodes within the current way?
+        if len(way.nodes) >= 2:
+            for i in range(len(way.nodes)):
+                for j in range(i + 1, len(way.nodes)):
+                    # v1 = # TODO
+                    pass
+
+
+def total_energy():
+    # TODO
+    pass
 
 
 def rdp(nodes, epsilon):
